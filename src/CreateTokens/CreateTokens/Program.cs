@@ -13,17 +13,13 @@ namespace CreateTokens
     {
         static void Main(string[] args)
         {
-
-            ProtectedForwardedTokens.Run();
-
             var audience = "microsoft.com";
             var issuer = "contoso.com";
-            var subject = new ClaimsIdentity(
-                new List<Claim>
-                {
-                    new Claim(JwtRegisteredClaimNames.Email, "bob@contoso.com"),
-                    new Claim(JwtRegisteredClaimNames.GivenName, "bob"),
-                });
+            var subject = new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Email, "bob@contoso.com"),
+                new Claim(JwtRegisteredClaimNames.GivenName, "bob"),
+            });
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
