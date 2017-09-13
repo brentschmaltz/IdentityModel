@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace SigningForPerformance
 {
@@ -17,67 +18,52 @@ namespace SigningForPerformance
     {        
         static void Main(string[] args)
         {
-	    // big bug fix here
-            X509Certificate2 signingCertificate = new X509Certificate2( @"Certs\SigningForPerformance.pfx", "SigningForPerformance" );            
-            X509SigningCredentials signingCredentials = new X509SigningCredentials( signingCertificate );
+            var signingKey = new X509SecurityKey(new X509Certificate2( @"Certs\TestCert1.pfx", "TestCert1", X509KeyStorageFlags.MachineKeySet));
+            var identity = new ClaimsIdentity( new List<Claim>{ new Claim( ClaimTypes.Name, "Bob" ) } );
+            var tokenDescriptorWithoutSignatureProvider = new SecurityTokenDescriptor
+            {
+                Audience = "https://www.SigningForPerformance.com",
+                Issuer = "https://SigningForPerformance.com",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha256),
+                Subject = identity
+            };
 
-            // Simple identity with one claim.
-            ClaimsIdentity identity = new ClaimsIdentity( new List<Claim>{ new Claim( ClaimTypes.Name, "Bob" ) } );
+            var signatureProvider = CryptoProviderFactory.Default.CreateForSigning(signingKey, SecurityAlgorithms.RsaSha256);
+            var tokenDescriptorWithSignatureProvider = new SecurityTokenDescriptor
+            {
+                Audience = "https://www.SigningForPerformance.com",
+                Issuer = "https://SigningForPerformance.com",
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha256)
+                {
+                    CryptoProviderFactory = new SigningForPerformanceCryptoProviderFactory(signatureProvider)
+                },
+                Subject = identity
+            };
 
-            // for simplicity and reuse, use SecurityTokenDescriptor to package up variables.
-            // Big bug fix in dev
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
-                                                      { 
-                                                        AppliesToAddress = "https://www.SigningForPerformance.com", 
-                                                        SigningCredentials = signingCredentials, 
-                                                        Subject = identity, 
-                                                        TokenIssuerName = "https://GotJwt.com" 
-                                                      };
-            SignatureProvider signatureProvider = (new SignatureProviderFactory()).CreateForSigning( signingCredentials.SigningKey, signingCredentials.SignatureAlgorithm );
-            
             // intialize runtime
-            RunPerfTest( 10, string.Empty, tokenDescriptor, signatureProvider: signatureProvider );
-            RunPerfTest( 10, string.Empty, tokenDescriptor );
+            Iterations = 10;
+            RunPerfTest(string.Empty, new JwtSecurityTokenHandler(), tokenDescriptorWithoutSignatureProvider);
+            RunPerfTest(string.Empty, new JwtSecurityTokenHandler(), tokenDescriptorWithSignatureProvider);
 
-            // see what 5000 signatures takes.
-            RunPerfTest( 5000, "Using single asymmetric signatureProvider", tokenDescriptor, signatureProvider: signatureProvider );
-            RunPerfTest( 5000, "Creating asymmetric signature provider for each token.", tokenDescriptor );
+            Iterations = 2000;
+            RunPerfTest("Single SignatureProvider", new JwtSecurityTokenHandler(), tokenDescriptorWithSignatureProvider);
+            RunPerfTest("Create SignatureProvider", new JwtSecurityTokenHandler(), tokenDescriptorWithoutSignatureProvider);
 
             Console.WriteLine("Press any key to close.");
             Console.ReadKey();
         }
 
-        static void RunPerfTest(int numberOfIterations, string description, SecurityTokenDescriptor tokenDescriptor, SignatureProvider signatureProvider = null, SignatureProviderFactory signatureProviderFactory = null)
+        static public int Iterations { get; set; }
+
+        static void RunPerfTest(string description, JwtSecurityTokenHandler tokenHandler, SecurityTokenDescriptor tokenDescriptor)
         {
-            DateTime timeStart = DateTime.UtcNow;
+            var timeStart = DateTime.UtcNow;
+            var jwtTokenHandler = tokenHandler ?? new JwtSecurityTokenHandler();
+            for (int i = 0; i < Iterations; i++)
+                jwtTokenHandler.CreateEncodedJwt(tokenDescriptor);
 
-            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            if ( signatureProviderFactory != null )
-            {
-                jwtSecurityTokenHandler.SignatureProviderFactory = signatureProviderFactory;
-            }
-
-            if (signatureProvider == null)
-            {
-                for (int i = 0; i < numberOfIterations; i++)
-                {
-                    JwtSecurityToken jwt = jwtSecurityTokenHandler.CreateToken( issuer: tokenDescriptor.TokenIssuerName, audience: tokenDescriptor.AppliesToAddress, subject: tokenDescriptor.Subject, signingCredentials: tokenDescriptor.SigningCredentials );
-                }
-            }
-            else
-            {
-                for (int i = 0; i < numberOfIterations; i++)
-                {
-                    JwtSecurityToken jwt = jwtSecurityTokenHandler.CreateToken( issuer: tokenDescriptor.TokenIssuerName, audience: tokenDescriptor.AppliesToAddress, subject: tokenDescriptor.Subject, signatureProvider: signatureProvider );
-                }
-            }
-
-            DateTime timeStop = DateTime.UtcNow;
-
-            if (!string.IsNullOrEmpty( description ))
-            {
-                Console.WriteLine( "Test: '" + description + ".\nNumber of iterations: " + numberOfIterations.ToString() + ". Time: " + (timeStop - timeStart).ToString() + "." );
-            }
+            if (!string.IsNullOrEmpty(description))
+                Console.WriteLine($"{description}: Iterations: {Iterations}, Time: {DateTime.UtcNow - timeStart}.");
         }
     }
 }

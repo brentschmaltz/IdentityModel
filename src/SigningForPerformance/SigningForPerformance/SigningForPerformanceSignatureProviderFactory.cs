@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.IdentityModel.Tokens;
 
 namespace SigningForPerformance
 {
-    public class SigningForPerformanceSignatureProviderFactory : SignatureProviderFactory
+    public class SigningForPerformanceCryptoProviderFactory : CryptoProviderFactory
     {
-        Dictionary<KeyValuePair<SecurityKey, string>, SignatureProvider> signatureProviders;
+        private SignatureProvider _signatureProvider;
+
+        public SigningForPerformanceCryptoProviderFactory(SignatureProvider signatureProvider)
+        {
+            _signatureProvider = signatureProvider;
+        }
 
         public override SignatureProvider CreateForSigning(SecurityKey key, string algorithm)
         {
-            return base.CreateForSigning(key, algorithm);
+            return _signatureProvider;
         }
 
         public override SignatureProvider CreateForVerifying(SecurityKey key, string algorithm)
         {
-            return base.CreateForVerifying(key, algorithm);
+            return _signatureProvider;
         }
 
-        public override void ReleaseProvider(SignatureProvider signatureProvider)
+        public override void ReleaseSignatureProvider(SignatureProvider signatureProvider)
         {
-            base.ReleaseProvider(signatureProvider);
         }
     }
 }
