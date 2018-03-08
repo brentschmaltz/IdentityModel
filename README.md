@@ -1,2 +1,2 @@
 # Wilson5x
-Sample code for using System.IdentityModel.Tokens.Jwt
+Sample code IdentityModel 5.2.x +
