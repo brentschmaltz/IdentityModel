@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\Saml1Tokens", "src\Saml1Tokens\Saml1Tokens.csproj", "{98474463-374E-4C5F-B554-0E9E72A572B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saml1Tokens", "Samples\Saml1Tokens\Saml1Tokens.csproj", "{98474463-374E-4C5F-B554-0E9E72A572B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportIssues", "SupportIssues\SupportIssues.csproj", "{A3624F91-CB63-44D4-9ED9-2A6CD578A00F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{98474463-374E-4C5F-B554-0E9E72A572B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98474463-374E-4C5F-B554-0E9E72A572B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98474463-374E-4C5F-B554-0E9E72A572B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3624F91-CB63-44D4-9ED9-2A6CD578A00F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3624F91-CB63-44D4-9ED9-2A6CD578A00F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3624F91-CB63-44D4-9ED9-2A6CD578A00F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3624F91-CB63-44D4-9ED9-2A6CD578A00F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
