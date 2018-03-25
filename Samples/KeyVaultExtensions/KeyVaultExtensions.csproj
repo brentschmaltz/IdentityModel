@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <AssemblyName>KeyVaultExtensions</AssemblyName>
+    <Description>Provides an API for a SecurityKey that uses AzureAD KeyVault for Cryptographic operations: Signing, Verifying Signatures, Encryption.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>KeyVault.SecurityKey</PackageId>
+    <TargetFrameworks>netstandard1.4</TargetFrameworks>
+    <PackageTags>.NET;Windows;Authentication;Identity;SecurityTokens;Cryptographic operations;Signing;Verifying Signatures;Encryption;KeyVault</PackageTags>
+    <RootNamespace>KeyVaultExtensions</RootNamespace>
+  </PropertyGroup>  
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.4'">
+    <DocumentationFile>bin\$(Configuration)|$(TargetFramework)\KeyVaultSecurityKey.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.4|AnyCPU'">
+    <DocumentationFile />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="2.3.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.2.1" />
+  </ItemGroup>
+
+
+</Project>
