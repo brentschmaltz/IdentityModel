@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens.Saml" Version="5.2.2-preview-50325185031" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\KeyVaultExtensions\KeyVaultExtensions.csproj" />
   </ItemGroup>
 

@@ -1,18 +1,27 @@
-﻿using System;
-using System.Security.Cryptography;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.Models;
+﻿using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Security.Cryptography;
 
 namespace KeyVaultExtensions
 {
+    /// <summary>
+    /// A extension to <see cref="SignatureProvider"/> that uses AzureAd Key Vault for Signing and Validating"/>
+    /// </summary>
     public class KeyVaultSignatureProvider : SignatureProvider
     {
-        private SHA256 _hash;
         private KeyVaultClient _keyVaultClient;
-        private KeyVaultSecurityKey _keyVaultSecurityKey;
+        private string _keyVaultKeyIdentifier;
 
-        public KeyVaultSignatureProvider(KeyVaultSecurityKey key, string algorithm, KeyVaultClient keyVaultClient)
+        /// <summary>
+        /// Instaintates a SignatureProvider that delegates to KeyVault for Signing and Verifying signatures
+        /// </summary>
+        /// <param name="key">the SecurityKey that contains keyid only. Not used.</param>
+        /// <param name="algorithm">the algorithm to use. Must be RS256</param>
+        /// <param name="keyVaultClient">used to obtain key vault services</param>
+        /// <param name="keyVaultKeyIdentifier">the uri identifier of the key</param>
+
+        public KeyVaultSignatureProvider(SecurityKey key, string algorithm, KeyVaultClient keyVaultClient, string keyVaultKeyIdentifier)
             : base(key, algorithm)
         {
             if (string.IsNullOrEmpty(algorithm))
@@ -21,36 +30,52 @@ namespace KeyVaultExtensions
             if (!Algorithm.Equals(SecurityAlgorithms.RsaSha256))
                 throw new ArgumentException($"Only {SecurityAlgorithms.RsaSha256} is supported. algorithm == {algorithm}.");
 
-            _hash = SHA256.Create();
-            _keyVaultSecurityKey = key;
-            _keyVaultClient = keyVaultClient;
+            if (string.IsNullOrEmpty(keyVaultKeyIdentifier))
+                throw new ArgumentNullException(nameof(keyVaultKeyIdentifier));
+
+            _keyVaultClient = keyVaultClient ?? throw new ArgumentNullException(nameof(keyVaultClient));
+            _keyVaultKeyIdentifier = keyVaultKeyIdentifier;
         }
 
+        /// <summary>
+        /// Creates the signature over a set of bytes
+        /// </summary>
+        /// <param name="input">the bytes to sign</param>
+        /// <returns>the signature as bytes</returns>
         public override byte[] Sign(byte[] input)
         {
-            byte[] digest = _hash.ComputeHash(input);
-
-            KeyOperationResult signature = _keyVaultClient.SignAsync(
-                _keyVaultSecurityKey.KeyId,
-                Algorithm,
-                digest
-                ).GetAwaiter().GetResult();
-
-            return signature.Result;
+            using (var hash = SHA256.Create())
+            {
+                return (_keyVaultClient.SignAsync(
+                    _keyVaultKeyIdentifier,
+                    Algorithm,
+                    hash.ComputeHash(input)
+                    ).GetAwaiter().GetResult()).Result;
+            }
         }
 
+        /// <summary>
+        /// Verifies the input is equal to the signautre using key vault
+        /// </summary>
+        /// <param name="input">the bytes to verigy</param>
+        /// <param name="signature">the signature to verify</param>
+        /// <returns>true or false if signature matches</returns>
         public override bool Verify(byte[] input, byte[] signature)
         {
-            byte[] digest = _hash.ComputeHash(input);
-            var verifyResult = _keyVaultClient.VerifyAsync(
-                _keyVaultSecurityKey.KeyId,
-                Algorithm,
-                digest,
-                signature).GetAwaiter().GetResult();
-
-            return verifyResult;
+            using (var hash = SHA256.Create())
+            {
+                return _keyVaultClient.VerifyAsync(
+                    _keyVaultKeyIdentifier,
+                    Algorithm,
+                    hash.ComputeHash(input),
+                    signature).GetAwaiter().GetResult();
+            }
         }
 
+        /// <summary>
+        /// Called when cleaning up. No-op
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
         }
