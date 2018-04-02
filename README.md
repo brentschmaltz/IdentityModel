@@ -9,3 +9,6 @@ Contains custom CryptoProviderFactory and SignatureProvider that delegate to Key
 
 #### SignSamlTokenUsingKeyVault
 Shows how to use KeyVaultExtensions to Sign a Saml1 token.
+
+#### CachingCryptoProvider
+Contains custom CryptoProviderFactory that caches Crypto operators. This technique can be used to improve performance.
