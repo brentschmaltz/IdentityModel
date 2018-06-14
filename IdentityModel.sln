@@ -11,11 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVaultExtensions", "Sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignSamlTokenUsingKeyVault", "Samples\SignSamlTokenUsingKeyVault\SignSamlTokenUsingKeyVault.csproj", "{6439F9E9-BF88-40B3-B3D0-D2BB3EF2BAE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingCryptoProvider", "Samples\CachingCryptoProvider\CachingCryptoProvider.csproj", "{4A1A8524-2AF8-4596-AF98-5CD4B8D7725C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingCryptoProvider", "Samples\CachingCryptoProvider\CachingCryptoProvider.csproj", "{4A1A8524-2AF8-4596-AF98-5CD4B8D7725C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignAndVerifyJwtUsingCachedProviders", "Samples\SignAndVerifyJwtUsingCachedProviders\SignAndVerifyJwtUsingCachedProviders.csproj", "{7F7652E2-EA5E-494D-8204-56A6B42FAA2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignAndVerifyJwtUsingCachedProviders", "Samples\SignAndVerifyJwtUsingCachedProviders\SignAndVerifyJwtUsingCachedProviders.csproj", "{7F7652E2-EA5E-494D-8204-56A6B42FAA2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Samples\Utilities\Utilities.csproj", "{AB30444D-AFEA-47AC-A242-895C1D6698DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Samples\Utilities\Utilities.csproj", "{AB30444D-AFEA-47AC-A242-895C1D6698DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidateJwtToken", "ValidateJwtToken\ValidateJwtToken.csproj", "{D17168AE-FA35-41AB-A4C4-77E6B1724E58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidateJwt461", "ValidateJwt461\ValidateJwt461.csproj", "{736A6BBB-D512-4CB1-99D2-2936153F860A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{AB30444D-AFEA-47AC-A242-895C1D6698DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB30444D-AFEA-47AC-A242-895C1D6698DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB30444D-AFEA-47AC-A242-895C1D6698DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D17168AE-FA35-41AB-A4C4-77E6B1724E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D17168AE-FA35-41AB-A4C4-77E6B1724E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D17168AE-FA35-41AB-A4C4-77E6B1724E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D17168AE-FA35-41AB-A4C4-77E6B1724E58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{736A6BBB-D512-4CB1-99D2-2936153F860A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{736A6BBB-D512-4CB1-99D2-2936153F860A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{736A6BBB-D512-4CB1-99D2-2936153F860A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{736A6BBB-D512-4CB1-99D2-2936153F860A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
