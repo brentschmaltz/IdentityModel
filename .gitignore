@@ -6,8 +6,9 @@
 *.user
 *.sln.docstates
 
-#local files
+#local files packages
 localdata/
+packages/*
 
 # lock files
 project.lock.json
@@ -68,6 +69,7 @@ ipch/
 *.opensdf
 *.sdf
 *.cachefile
+.vs/*
 
 # Visual Studio profiler
 *.psess
