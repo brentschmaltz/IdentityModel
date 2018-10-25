@@ -23,6 +23,7 @@ namespace WsFederationMetadata
             var validationParameters = new TokenValidationParameters
             {
                 IssuerSigningKeys = wsFedConfiguration.SigningKeys,
+                IssuerSigningKeyValidator = IssuerSigningKeyValidator,
                 ValidAudience = clientId,
                 ValidIssuer = wsFedConfiguration.Issuer
             };
@@ -33,6 +34,18 @@ namespace WsFederationMetadata
                                     samlToken,
                                     validationParameters, 
                                     out SecurityToken samlSecurityToken);
+        }
+
+        private static bool IssuerSigningKeyValidator(SecurityKey securityKey, SecurityToken securityToken, TokenValidationParameters validationParameters)
+        {
+            if (securityKey is X509SecurityKey x509SecurityKey)
+            {
+                // compare x509SecurityKey.Certificate
+                //< add thumbprint = "022d5e4993a87c2d693bf01912a8333d5ff58df8" name = "identityserver1.mycompany.net" />
+                //< add thumbprint = "c58a90087a548d4c1bc1e609a9caa658e916ca83" name = "identityserver2.mycompany.net" />
+            }
+
+            return true;
         }
     }
 }
